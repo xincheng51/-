@@ -1,0 +1,80 @@
+from random import seed, shuffle
+from collections import defaultdict
+
+
+def generate_dial_and_centre(for_seed):
+    colours = 'CDHS' # Clubs, Diamonds, Hearts, Spades
+    #                                            jacks, queens, kings
+    ranks = list(str(x) for x in range(1, 11)) + list('jqk')
+    seed(for_seed)
+    cards = [colour + rank for colour in colours for rank in ranks]
+    shuffle(cards)
+    dial = dict.fromkeys(range(1, 13))
+    for i in range(12):
+        dial[i + 1] = [cards[i + 13 * j] for j in range(4)]
+    return dial, [cards[12 + 13 * j] for j in range(4)]
+
+def initial_hour(hour, dial, flipped_card = None):
+    colours = 'CDHS'
+    unicode_colours = 'DCBA'
+    cards = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k']
+    unicode_card_numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'D', 'E']
+    unibase = "\\U0001F0"
+    line = []
+    for card in dial[hour]:
+      card_colour = card[0]
+      card_number = card[1:]
+      colour_index = colours.find(card_colour)
+      unicode_colour = unicode_colours[colour_index]
+      card_index = card.index(card_number)
+      unicode_card_number = unicode_card_numbers[card_index]
+      unicode_card = bytes((unibase + unicode_colour + unicode_card_number).encode('utf-8')).decode('unicode-escape')
+      line.append("hidden" + unicode_card)
+#      if flipped_cards and card in flipped_cards:
+#        result.append(unicode_card)
+#      else:
+#        result.append("hidden" + unicode_card)
+    print("  ".join(line))
+      
+  
+
+def hour_after_playing_from_beginning_for_at_most( hour, nb_of_steps, dial, centre, king = 1 ):
+    cards = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k' ]
+    unicode_card_numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+    #unicode_card_numbers = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13' ]                                            ):
+    new_dials = {}
+    for key,items in dial.items():
+      new_dial[key] = ([item for item in items])
+    new_dials[13] = ([item for item in centre])
+    
+    flipped_cards = defaultdict(list)
+    current_stack_index = 13
+    
+    for index in range(nb_of_steps):
+      if len(flipped_cards[current_stack_index]) ==4:
+        if index < 51:
+          if king:
+            print("No success...")
+          else:
+            print("Could not play that far...")
+        break 
+        
+    for _ in range(nb_of_steps):
+      if len(flipped_cards[current_stack_index]) == 4:
+        break
+        flipped_card = new_dials[current_stack_index].pop()
+        flipped_card_index = cards.index(flipped_card[1:])
+        flipped_card_number = card_numbers[flipped_card_index]
+      
+        current_stack_index =int(flipped_card_number)
+        new_dials[current_stack_index].inset(0, flipped_card)
+        flipped_card[current_stack_index].append(flipped_card)
+      else:
+        initial_hour(hour, new_dials, flipped_cards[hour])
+    
+
+
+def kings_at_end_of_game(dial, centre):
+    hour_after_playing_from_beginning_for_at_most(13, 53, dial, centre, king = 1)
+
+# POSSIBLY DEFINE OTHER FUNCTIONS

@@ -1,0 +1,51 @@
+
+# 函数check_point是检查轮廓，分别检查上下左右，利用xy的值做加减1运算
+def check_point(grid, y, x):
+    locations = [(1, 0), (-1, 0), (0, -1), (0, 1)]
+    num = 0
+    y_len = len(grid)
+    x_len = len(grid[0])
+    for location_y, location_x in locations:
+        new_y = y + location_y
+        new_x = x + location_x
+        if 0 <= new_y < y_len and 0 <= new_x < x_len and grid[new_y][new_x] != ' ':
+            num = num + 1
+    if num < 4:
+        return True
+    else:
+        return False
+
+
+def loop_point(grid, y, x):
+
+    locations = [(1, 0), (-1, 0), (0, -1), (0, 1), (1, 1), (1, -1), (-1, -1), (-1, 1)]
+    grid[y][x] = '1'
+    y_len = len(grid)
+    x_len = len(grid[0])
+    for location_y, location_x in locations:
+        new_y = y + location_y
+        new_x = x + location_x
+        if 0 <= new_y < y_len and 0 <= new_x < x_len \
+                and grid[new_y][new_x] == '*' \
+                and check_point(grid, new_y, new_x):
+            loop_point(grid, new_y, new_x)
+            
+#第二项工作打印星号图的轮廓
+#判断依据：一个星号不是被四个其他星号所围住
+#函数display_leftmost_topmost_boundary目的是从获取到的起始点位开始打印
+def display_leftmost_topmost_boundary(*grid):
+    for y in range(len(grid)):
+            for x in range(len(grid[0])):
+                leftmost_x = int()
+                leftmost_y = int()
+                if grid[y][x] == '*':
+                    leftmost_x = x
+                    leftmost_y = y
+                    #return x, y
+    
+    add_grid = []
+    for item in grid:
+        add_grid.append(list(item))
+    loop_point(add_grid, leftmost_y, leftmost_x)
+    for items in add_grid:
+        print(" ".join("".join(items).replace("*",' ').replace("1",'*')))
